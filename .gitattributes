@@ -1,0 +1,7 @@
+/packages/hynek/pim/* export-ignore
+/composer.json export-ignore
+/readme.md export-ignore
+
+* export-ignore
+
+/packages/hynek/pim/** !export-ignore
