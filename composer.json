@@ -1,0 +1,18 @@
+{
+    "name": "hynek/pim",
+    "description": "",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "version": "0.0.1",
+    "require": {
+        "php": "^8.0",
+        "illuminate/contracts": "^12.0",
+        "hynek/package-tools": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hynek\\Pim\\": "src"
+        }
+    }
+}
