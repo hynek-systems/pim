@@ -107,6 +107,46 @@ class Module extends BaseModule
                 ]
             ]
         );
+
+        $this->createEntityField(
+            $entityType,
+            'datepicker',
+            __('pim:Available on'),
+            'available_on',
+            3
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:SKU'),
+            'sku',
+            4
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Barcode'),
+            'barcode',
+            5
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Weight'),
+            'weight',
+            6,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:Kg'),
+                    ],
+                ]
+            ]
+        );
     }
 
     private function addEntityField()
