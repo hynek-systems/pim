@@ -10,6 +10,12 @@ class PimServiceProvider extends PackageToolsServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        //
+        $package->name('pim')
+            ->hasMigrations([
+                'create_countries_table',
+                'create_tax_categories_table',
+                'create_tax_rates_table',
+                'create_tax_zones_table',
+            ]);
     }
 }

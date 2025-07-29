@@ -5,7 +5,12 @@ namespace Modules\Core\Pim;
 use App\EntityField\EntityFieldConfig;
 use App\EntityField\EntityFieldManifest;
 use App\Models\EntityType;
+use App\Models\Site;
 use App\Modules\BaseModule;
+use Hynek\Pim\Models\Country;
+use Hynek\Pim\Models\TaxCategory;
+use Hynek\Pim\Models\TaxRate;
+use Hynek\Pim\Models\TaxZone;
 use Hynek\Pim\PimServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -34,7 +39,28 @@ class Module extends BaseModule
 
     public function bootstrap(): void
     {
-        //
+        $this->resolveRelationships();
+    }
+
+    protected function resolveRelationships()
+    {
+        parent::resolveRelationships();
+
+        Site::resolveRelationUsing('countries', function ($site) {
+            return $site->hasMany(Country::class, 'site_id');
+        });
+
+        Site::resolveRelationUsing('taxCategories', function ($site) {
+            return $site->hasMany(TaxCategory::class, 'site_id');
+        });
+
+        Site::resolveRelationUsing('taxRates', function ($site) {
+            return $site->hasMany(TaxRate::class, 'site_id');
+        });
+
+        Site::resolveRelationUsing('taxZones', function ($site) {
+            return $site->hasMany(TaxZone::class, 'site_id');
+        });
     }
 
     protected function installing(): void
@@ -82,7 +108,7 @@ class Module extends BaseModule
             'text',
             __('pim:Position'),
             'position',
-            1,
+            5,
             [
                 'config' => [
                     'type' => 'number',
@@ -98,7 +124,7 @@ class Module extends BaseModule
             'price',
             __('pim:Master Price'),
             'master[price]',
-            2,
+            10,
             [
                 'config' => [
                     'form' => [
@@ -113,7 +139,7 @@ class Module extends BaseModule
             'datepicker',
             __('pim:Available on'),
             'available_on',
-            3
+            15
         );
 
         $this->createEntityField(
@@ -121,7 +147,7 @@ class Module extends BaseModule
             'text',
             __('pim:SKU'),
             'sku',
-            4
+            20
         );
 
         $this->createEntityField(
@@ -129,7 +155,7 @@ class Module extends BaseModule
             'text',
             __('pim:Barcode'),
             'barcode',
-            5
+            25
         );
 
         $this->createEntityField(
@@ -137,12 +163,60 @@ class Module extends BaseModule
             'text',
             __('pim:Weight'),
             'weight',
-            6,
+            30,
             [
                 'config' => [
                     'form' => [
                         'type' => 'number',
                         'suffix' => __('pim:Kg'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'select',
+            __('Tax Category'),
+            'tax_category',
+            35,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Select tax category'),
+                        'options' => current_site()?->taxCategories->pluck('name', 'id')->toArray(),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'wysywig',
+            __('pim:Short Description'),
+            'short_description',
+            40,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter short description'),
+                        'rows' => 4,
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'wysywig',
+            __('pim:Description'),
+            'description',
+            45,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter description'),
+                        'rows' => 10,
                     ],
                 ]
             ]
