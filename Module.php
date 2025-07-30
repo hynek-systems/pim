@@ -40,6 +40,8 @@ class Module extends BaseModule
     public function bootstrap(): void
     {
         $this->resolveRelationships();
+
+        $this->addEntityField();
     }
 
     protected function resolveRelationships()
@@ -63,6 +65,28 @@ class Module extends BaseModule
         });
     }
 
+    private function addEntityField()
+    {
+        $config = app(EntityFieldConfig::class);
+        $config->setFormConfig([
+            'placeholder' => 'Enter price here',
+            'decimal_places' => 2,
+            'thousand_separator' => ' ',
+        ]);
+        $config->setRulesConfig(['required' => true, 'numeric' => true]);
+
+        $manifest = app(EntityFieldManifest::class, ['key' => 'price']);
+        $manifest->label = 'Price';
+        $manifest->description = 'A field for entering price.';
+        $manifest->form_component = null;
+        $manifest->render_component = 'pim::entity-fields.renderers.price';
+        $manifest->config_form = \Hynek\Pim\EntityFiels\PriceConfigForm::class;
+        $manifest->entity_form = \Hynek\Pim\EntityFiels\Entity\PriceEntityForm::class;
+        $manifest->config = $config;
+
+        app('entityFieldManager')->addEntityField($manifest);
+    }
+
     protected function installing(): void
     {
         //
@@ -72,6 +96,9 @@ class Module extends BaseModule
     {
         $productEntityType = $this->registerProductEntityTypes();
         $this->registerProductFields($productEntityType);
+
+        $productVariantEntityType = $this->registerProductVariantEntityType();
+        $this->registerProductVariantFields($productVariantEntityType);
     }
 
     private function registerProductEntityTypes(): EntityType
@@ -85,8 +112,6 @@ class Module extends BaseModule
 
     private function registerProductFields(EntityType $entityType): void
     {
-        $this->addEntityField();
-
         $this->createEntityField(
             $entityType,
             'text',
@@ -105,73 +130,10 @@ class Module extends BaseModule
 
         $this->createEntityField(
             $entityType,
-            'text',
-            __('pim:Position'),
-            'position',
-            5,
-            [
-                'config' => [
-                    'type' => 'number',
-                    'form' => [
-                        'placeholder' => __('pim:Enter position'),
-                    ],
-                ],
-            ]
-        );
-
-        $this->createEntityField(
-            $entityType,
-            'price',
-            __('pim:Master Price'),
-            'master[price]',
-            10,
-            [
-                'config' => [
-                    'form' => [
-                        'placeholder' => __('pim:Enter master price'),
-                    ],
-                ]
-            ]
-        );
-
-        $this->createEntityField(
-            $entityType,
             'datepicker',
             __('pim:Available on'),
             'available_on',
             15
-        );
-
-        $this->createEntityField(
-            $entityType,
-            'text',
-            __('pim:SKU'),
-            'sku',
-            20
-        );
-
-        $this->createEntityField(
-            $entityType,
-            'text',
-            __('pim:Barcode'),
-            'barcode',
-            25
-        );
-
-        $this->createEntityField(
-            $entityType,
-            'text',
-            __('pim:Weight'),
-            'weight',
-            30,
-            [
-                'config' => [
-                    'form' => [
-                        'type' => 'number',
-                        'suffix' => __('pim:Kg'),
-                    ],
-                ]
-            ]
         );
 
         $this->createEntityField(
@@ -223,26 +185,173 @@ class Module extends BaseModule
         );
     }
 
-    private function addEntityField()
+    private function registerProductVariantEntityType(): EntityType
     {
-        $config = app(EntityFieldConfig::class);
-        $config->setFormConfig([
-            'placeholder' => 'Enter price here',
-            'decimal_places' => 2,
-            'thousand_separator' => ' ',
-        ]);
-        $config->setRulesConfig(['required' => true, 'numeric' => true]);
+        return $this->createEntityType(
+            __('pim:Product Variant'),
+            __('pim:This entity type lets you create product variant entities.'),
+            'product_variant',
+        );
+    }
 
-        $manifest = app(EntityFieldManifest::class, ['key' => 'price']);
-        $manifest->label = 'Price';
-        $manifest->description = 'A field for entering price.';
-        $manifest->form_component = null;
-        $manifest->render_component = 'pim::entity-fields.renderers.price';
-        $manifest->config_form = \Hynek\Pim\EntityFiels\PriceConfigForm::class;
-        $manifest->entity_form = \Hynek\Pim\EntityFiels\Entity\PriceEntityForm::class;
-        $manifest->config = $config;
+    private function registerProductVariantFields(EntityType $entityType): void
+    {
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Position'),
+            'position',
+            5,
+            [
+                'config' => [
+                    'type' => 'number',
+                    'form' => [
+                        'placeholder' => __('pim:Enter position'),
+                    ],
+                ],
+            ]
+        );
 
-        app('entityFieldManager')->addEntityField($manifest);
+        $this->createEntityField(
+            $entityType,
+            'price',
+            __('pim:Master Price'),
+            'master[price]',
+            10,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter master price'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:SKU'),
+            'sku',
+            20
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Barcode'),
+            'barcode',
+            25
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Weight'),
+            'weight',
+            30,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:Kg'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:For sale'),
+            'for_sale',
+            35,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'checkbox',
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Height'),
+            'height',
+            40,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:cm'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Width'),
+            'width',
+            45,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:cm'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Length'),
+            'length',
+            50,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:cm'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Track inventory'),
+            'track_inventory',
+            55,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'checkbox',
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Volume'),
+            'volume',
+            60,
+            [
+                'config' => [
+                    'form' => [
+                        'type' => 'number',
+                        'suffix' => __('pim:m³'),
+                    ],
+                ]
+            ]
+        );
     }
 
     protected function uninstalling(): void
