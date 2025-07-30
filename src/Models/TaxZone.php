@@ -24,6 +24,20 @@ class TaxZone extends Model
         'handling_vat_numbers' => 'boolean',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if ($model->is_default) {
+                // Ensure only one tax zone can be set as default
+                static::where('site_id', $model->site_id)
+                    ->where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+        });
+    }
+
     public function site()
     {
         return $this->belongsTo(Site::class);
