@@ -191,6 +191,36 @@ class Module extends BaseModule
                 ]
             ]
         );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Source Owner'),
+            'source_owner',
+            50,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter source owner'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Source ID'),
+            'source_id',
+            55,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter source ID'),
+                    ],
+                ]
+            ]
+        );
     }
 
     private function registerProductVariantEntityType(): EntityType
@@ -361,6 +391,36 @@ class Module extends BaseModule
                     'form' => [
                         'type' => 'number',
                         'suffix' => __('pim:m³'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Source Owner'),
+            'source_owner',
+            65,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter source owner'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'text',
+            __('pim:Source ID'),
+            'source_id',
+            65,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Enter source ID'),
                     ],
                 ]
             ]
