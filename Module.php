@@ -4,6 +4,7 @@ namespace Modules\Core\Pim;
 
 use App\EntityField\EntityFieldConfig;
 use App\EntityField\EntityFieldManifest;
+use App\Exceptions\InvalidEntityField;
 use App\Models\EntityType;
 use App\Models\Site;
 use App\Modules\BaseModule;
@@ -12,6 +13,8 @@ use Hynek\Pim\Models\TaxCategory;
 use Hynek\Pim\Models\TaxRate;
 use Hynek\Pim\Models\TaxZone;
 use Hynek\Pim\PimServiceProvider;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Container\CircularDependencyException;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -110,6 +113,11 @@ class Module extends BaseModule
         );
     }
 
+    /**
+     * @throws InvalidEntityField
+     * @throws CircularDependencyException
+     * @throws BindingResolutionException
+     */
     private function registerProductFields(EntityType $entityType): void
     {
         $this->createEntityField(
@@ -194,6 +202,11 @@ class Module extends BaseModule
         );
     }
 
+    /**
+     * @throws CircularDependencyException
+     * @throws InvalidEntityField
+     * @throws BindingResolutionException
+     */
     private function registerProductVariantFields(EntityType $entityType): void
     {
         $this->createEntityField(
