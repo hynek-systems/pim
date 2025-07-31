@@ -3,6 +3,7 @@
 namespace Hynek\Pim\Models;
 
 use App\Models\Site;
+use Hynek\Pim\Services\Calculator;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,5 +52,27 @@ class Currency extends Model
     public function site()
     {
         return $this->belongsTo(Site::class);
+    }
+
+    /**
+     * Display the amount formatted according to the currency settings.
+     *
+     * @param  float  $amount
+     * @return string
+     */
+    public function displayAmount(float $amount): string
+    {
+        $amount = Calculator::calcExchangeRate($amount, $this->exchange_rate);
+
+        $formatted_amount = number_format(
+            $amount,
+            2,
+            $this->decimal_marker,
+            $this->thousands_separator
+        );
+
+        return $this->symbol_after_amount
+            ? $formatted_amount.' '.$this->symbol
+            : $this->symbol.' '.$formatted_amount;
     }
 }

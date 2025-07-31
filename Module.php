@@ -9,6 +9,7 @@ use App\Models\EntityType;
 use App\Models\Site;
 use App\Modules\BaseModule;
 use Hynek\Pim\Models\Country;
+use Hynek\Pim\Models\Currency;
 use Hynek\Pim\Models\TaxCategory;
 use Hynek\Pim\Models\TaxRate;
 use Hynek\Pim\Models\TaxZone;
@@ -55,6 +56,10 @@ class Module extends BaseModule
             return $site->hasMany(Country::class, 'site_id');
         });
 
+        Site::resolveRelationUsing('currencies', function ($site) {
+            return $this->hasMany(Currency::class);
+        });
+
         Site::resolveRelationUsing('taxCategories', function ($site) {
             return $site->hasMany(TaxCategory::class, 'site_id');
         });
@@ -83,11 +88,18 @@ class Module extends BaseModule
         $manifest->description = 'A field for entering price.';
         $manifest->form_component = null;
         $manifest->render_component = 'pim::entity-fields.renderers.price';
-        $manifest->config_form = \Hynek\Pim\EntityFiels\PriceConfigForm::class;
+        $manifest->config_form = \Hynek\Pim\EntityField\PriceConfigForm::class;
         $manifest->entity_form = \Hynek\Pim\EntityFiels\Entity\PriceEntityForm::class;
         $manifest->config = $config;
 
         app('entityFieldManager')->addEntityField($manifest);
+    }
+
+    public function dependencies(): array
+    {
+        return [
+            'hynek/media' => '0.0.1'
+        ];
     }
 
     protected function installing(): void
@@ -435,5 +447,16 @@ class Module extends BaseModule
     protected function uninstalled(): void
     {
         //
+    }
+
+    private function registerMenuItems()
+    {
+        $root = $this->addMenuItem('admin-nav', 'pim', __('pim:PIM'), 10);
+        $this->addMenuItem('admin-nav', 'products', __('pim:Products'), 10, $root);
+        $this->addMenuItem('admin-nav', 'countries', __('pim:Countries'), 20, $root);
+        $this->addMenuItem('admin-nav', 'currencies', __('pim:Currencies'), 30, $root);
+        $this->addMenuItem('admin-nav', 'tax-categories', __('pim:Tax Categories'), 50, $root);
+        $this->addMenuItem('admin-nav', 'tax-rates', __('pim:Tax Rates'), 40, $root);
+        $this->addMenuItem('admin-nav', 'tax-zones', __('pim:Tax Zones'), 60, $root);
     }
 }
