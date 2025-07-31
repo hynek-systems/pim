@@ -3,11 +3,11 @@
 namespace Hynek\Pim\Models;
 
 use App\Models\Site;
+use App\Modules\ModuleModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TaxRate extends Model
+class TaxRate extends ModuleModel
 {
     use HasUuids, SoftDeletes;
 

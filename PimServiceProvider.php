@@ -17,6 +17,9 @@ class PimServiceProvider extends PackageToolsServiceProvider
                 'create_tax_rates_table',
                 'create_tax_zones_table',
                 'create_product_variants_table',
+                'create_currencies_table',
+                'create_option_tyepes_table',
+                'create_option_type_values_table',
             ]);
     }
 }

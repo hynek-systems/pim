@@ -3,11 +3,11 @@
 namespace Hynek\Pim\Models;
 
 use App\Models\Site;
+use App\Modules\ModuleModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TaxCategory extends Model
+class TaxCategory extends ModuleModel
 {
     use HasUuids, SoftDeletes;
 
@@ -24,7 +24,7 @@ class TaxCategory extends Model
         'is_default' => 'boolean',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

@@ -4,12 +4,12 @@ namespace Hynek\Pim\Models;
 
 use App\Models\Entity;
 use App\Models\Site;
+use App\Modules\ModuleModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductVariant extends Model
+class ProductVariant extends ModuleModel
 {
     use HasUuids, SoftDeletes;
 

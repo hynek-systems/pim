@@ -3,12 +3,12 @@
 namespace Hynek\Pim\Models;
 
 use App\Models\Site;
+use App\Modules\ModuleModel;
 use Hynek\Pim\Services\Calculator;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Currency extends Model
+class Currency extends ModuleModel
 {
     use HasUuids, SoftDeletes;
 
@@ -35,7 +35,7 @@ class Currency extends Model
         'exchange_rate' => 'decimal:6',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
