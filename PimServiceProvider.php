@@ -20,6 +20,10 @@ class PimServiceProvider extends PackageToolsServiceProvider
                 'create_currencies_table',
                 'create_option_tyepes_table',
                 'create_option_type_values_table',
+            ])
+            ->hasRoutes([
+                'web',
+                'api',
             ]);
     }
 }

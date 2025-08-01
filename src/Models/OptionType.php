@@ -52,7 +52,7 @@ class OptionType extends ModuleModel
         return $this->hasMany(ProductOptionType::class, 'option_type_id');
     }
 
-    public function optionTypeValues()
+    public function values()
     {
         return $this->hasMany(OptionTypeValue::class, 'option_type_id');
     }
