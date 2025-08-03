@@ -8,12 +8,15 @@ use App\Exceptions\InvalidEntityField;
 use App\Models\EntityType;
 use App\Models\Site;
 use App\Modules\BaseModule;
+use Hynek\Pim\EntityField\Entity\PriceEntityForm;
+use Hynek\Pim\EntityField\PriceConfigForm;
 use Hynek\Pim\Models\Country;
 use Hynek\Pim\Models\Currency;
 use Hynek\Pim\Models\TaxCategory;
 use Hynek\Pim\Models\TaxRate;
 use Hynek\Pim\Models\TaxZone;
 use Hynek\Pim\PimServiceProvider;
+use Hynek\Pim\Services\OptionTypeService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\CircularDependencyException;
 use Illuminate\Support\ServiceProvider;
@@ -78,8 +81,10 @@ class Module extends BaseModule
         $config = app(EntityFieldConfig::class);
         $config->setFormConfig([
             'placeholder' => 'Enter price here',
-            'decimal_places' => 2,
-            'thousand_separator' => ' ',
+            'decimal_places' => '\\Hynek\\Pim\\Services\\Currency\\::current_decimal_places',
+            'thousand_separator' => '\\Hynek\\Pim\\Services\\Currency\\::current_thousand_separator',
+            'decimal_separator' => '\\Hynek\\Pim\\Services\\Currency\\::current_decimal_separator',
+            'suffix' => '\\Hynek\\Pim\\Services\\Currency\\::current_symbol',
         ]);
         $config->setRulesConfig(['required' => true, 'numeric' => true]);
 
@@ -88,8 +93,8 @@ class Module extends BaseModule
         $manifest->description = 'A field for entering price.';
         $manifest->form_component = null;
         $manifest->render_component = 'pim::entity-fields.renderers.price';
-        $manifest->config_form = \Hynek\Pim\EntityField\PriceConfigForm::class;
-        $manifest->entity_form = \Hynek\Pim\EntityFiels\Entity\PriceEntityForm::class;
+        $manifest->config_form = PriceConfigForm::class;
+        $manifest->entity_form = PriceEntityForm::class;
         $manifest->config = $config;
 
         app('entityFieldManager')->addEntityField($manifest);
@@ -229,6 +234,22 @@ class Module extends BaseModule
                 'config' => [
                     'form' => [
                         'placeholder' => __('pim:Enter source ID'),
+                    ],
+                ]
+            ]
+        );
+
+        $this->createEntityField(
+            $entityType,
+            'select',
+            __('pim:Option Types'),
+            'option_types',
+            60,
+            [
+                'config' => [
+                    'form' => [
+                        'placeholder' => __('pim:Select option types'),
+                        'options' => [OptionTypeService::class, 'getOptionTypes'],
                     ],
                 ]
             ]
@@ -451,12 +472,10 @@ class Module extends BaseModule
 
     private function registerMenuItems()
     {
-        $root = $this->addMenuItem('admin-nav', 'pim', __('pim:PIM'), 10);
-        $this->addMenuItem('admin-nav', 'products', __('pim:Products'), 10, $root);
-        $this->addMenuItem('admin-nav', 'countries', __('pim:Countries'), 20, $root);
-        $this->addMenuItem('admin-nav', 'currencies', __('pim:Currencies'), 30, $root);
-        $this->addMenuItem('admin-nav', 'tax-categories', __('pim:Tax Categories'), 50, $root);
-        $this->addMenuItem('admin-nav', 'tax-rates', __('pim:Tax Rates'), 40, $root);
-        $this->addMenuItem('admin-nav', 'tax-zones', __('pim:Tax Zones'), 60, $root);
+        $root = $this->addMenuItem('admin-nav', 'pim.pim', __('pim:PIM'), 10);
+        $this->addMenuItem('admin-nav', 'pim.products', __('pim:Products'), 10, $root);
+        $this->addMenuItem('admin-nav', 'pim.countries', __('pim:Countries'), 20, $root);
+        $this->addMenuItem('admin-nav', 'pim.currencies', __('pim:Currencies'), 30, $root);
+        $this->addMenuItem('admin-nav', 'pim.taxes', __('pim:Taxes'), 50, $root);
     }
 }
