@@ -5,6 +5,7 @@ namespace Modules\Core\Pim;
 use App\EntityField\EntityFieldConfig;
 use App\EntityField\EntityFieldManifest;
 use App\Exceptions\InvalidEntityField;
+use App\Models\Entity;
 use App\Models\EntityType;
 use App\Models\Site;
 use App\Modules\BaseModule;
@@ -55,6 +56,10 @@ class Module extends BaseModule
     {
         parent::resolveRelationships();
 
+        Site::resolveRelationUsing('products', function ($site) {
+            return $site->hasMany(Entity::class, 'site_id')->where('entity_type', 'product');
+        });
+
         Site::resolveRelationUsing('countries', function ($site) {
             return $site->hasMany(Country::class, 'site_id');
         });
@@ -103,7 +108,8 @@ class Module extends BaseModule
     public function dependencies(): array
     {
         return [
-            'hynek/media' => '0.0.1'
+            'hynek/media-library' => '0.0.1',
+            'hynek/blade-table' => '0.0.1',
         ];
     }
 
