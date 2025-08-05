@@ -5,6 +5,15 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "version": "0.0.1",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../package-tools",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
         "php": "^8.0",
         "illuminate/contracts": "^12.0",

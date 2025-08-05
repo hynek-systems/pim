@@ -23,7 +23,6 @@ class PimServiceProvider extends PackageToolsServiceProvider
             ])
             ->hasRoutes([
                 'web',
-                'api',
             ]);
     }
 }
